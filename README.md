@@ -16,6 +16,7 @@ this repository.
 - WooCommerce
 - Advanced Custom Fields (ACF) – Free
 - Contact Form 7 (Quote Request form)
+- YITH Request a Quote for WooCommerce
 
 Each platform follows best practices for version control
 and deployment.
