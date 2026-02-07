@@ -21,7 +21,7 @@ if ( ! $product || ! $product->is_purchasable() ) {
 	?>
 
 	<a href="#"
-	   class="button popmake-37"
+	   class="button popmake-36"
 	   data-product-id="<?php echo esc_attr( $product->get_id() ); ?>">
 		Request a Quote
 	</a>
