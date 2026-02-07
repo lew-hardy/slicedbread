@@ -12,31 +12,11 @@ add_action('wp_enqueue_scripts', function () {
   );
 });
 
+
 /**
- * PDP customisations
+ * Accordions for additional product info (ACF Free fields)
+ * Only show accordions that have content.
  */
-add_action('wp', function () {
-  // Only run on single product pages with WooCommerce active
-  if (!function_exists('is_product') || !is_product()) {
-    return;
-  }
-});
-
-// Add stock status flag to single product summary, before price/quote button
-add_action('woocommerce_single_product_summary', function () {
-  global $product;
-
-  if (!$product) return;
-
-  $in_stock = $product->is_in_stock();
-
-  echo '<div class="sb-stock-flag sb-stock-flag--' . ($in_stock ? 'in' : 'out') . '">';
-  echo $in_stock ? 'IN STOCK' : 'OUT OF STOCK';
-  echo '</div>';
-}, 6);
-
-
-// Accordions for additional product info, using ACF fields for content. Only show if content exists, and allow title-only accordions to support legacy content without needing updates.
 add_action('woocommerce_single_product_summary', function () {
   if (!function_exists('get_field')) {
     return;
@@ -51,7 +31,6 @@ add_action('woocommerce_single_product_summary', function () {
     $title   = get_field("accordion_{$i}_title", $product_id);
     $content = get_field("accordion_{$i}_content", $product_id);
 
-    // Only render when there is content (titles alone can be misleading)
     if (!empty($content)) {
       $items[] = array(
         'title'   => !empty($title) ? $title : "Details {$i}",
@@ -78,7 +57,6 @@ add_action('woocommerce_single_product_summary', function () {
 
   echo '</div>';
 }, 35);
-
 
 
 /**
