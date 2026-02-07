@@ -30,6 +30,6 @@ add_action('wp', function () {
 
   // Add Request a Quote button
   add_action('woocommerce_single_product_summary', function () {
-    echo '<a href="#" class="button popmake-37">Request a Quote</a>';
+    echo '<a href="#" class="button popmake-36">Request a Quote</a>';
   }, 30);
 });
