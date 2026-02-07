@@ -127,6 +127,7 @@ Version: 1.0.0
 .sb-stock-flag--out{ opacity:0.6; }
 
 
+
 /* =========================
     Accordion Styles
     ========================= */
@@ -156,4 +157,39 @@ Version: 1.0.0
 .sb-accordion__content {
   padding-top: 0.75rem;
   font-size: 0.95rem;
+}
+
+
+
+/* =========================
+    Below the Fold Section
+    ========================= */
+
+.sb-below-fold {
+  padding: 3rem 0;
+}
+
+.sb-below-fold__inner {
+  display: grid;
+  gap: 2rem;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+}
+
+.sb-below-fold__media img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.sb-below-fold__content h2 {
+  margin: 0 0 1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+@media (max-width: 768px) {
+  .sb-below-fold__inner {
+    grid-template-columns: 1fr;
+  }
 }
