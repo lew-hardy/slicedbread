@@ -78,3 +78,47 @@ add_action('woocommerce_single_product_summary', function () {
 
   echo '</div>';
 }, 35);
+
+
+
+/**
+ * Below-the-fold mixed media section (ACF Free fields)
+ * Renders only if at least one field is set.
+ */
+add_action('woocommerce_after_single_product_summary', function () {
+  if (!function_exists('get_field')) return;
+
+  $product_id = get_the_ID();
+
+  $image   = get_field('below_fold_image', $product_id);
+  $heading = get_field('below_fold_heading', $product_id);
+  $content = get_field('below_fold_content', $product_id);
+  $video   = get_field('below_fold_video_url', $product_id);
+
+  if (empty($image) && empty($video) && empty($heading) && empty($content)) {
+    return;
+  }
+
+  echo '<section class="sb-below-fold" aria-label="Product details section">';
+  echo '<div class="sb-below-fold__inner">';
+
+  echo '<div class="sb-below-fold__media">';
+  if (!empty($video)) {
+    echo wp_oembed_get($video) ? wp_oembed_get($video) : '<a href="' . esc_url($video) . '" target="_blank" rel="noopener">Watch video</a>';
+  } elseif (!empty($image)) {
+    echo '<img src="' . esc_url($image) . '" alt="' . esc_attr($heading ? $heading : 'Product image') . '">';
+  }
+  echo '</div>';
+
+  echo '<div class="sb-below-fold__content">';
+  if (!empty($heading)) {
+    echo '<h2>' . esc_html($heading) . '</h2>';
+  }
+  if (!empty($content)) {
+    echo wp_kses_post($content);
+  }
+  echo '</div>';
+
+  echo '</div>';
+  echo '</section>';
+}, 20);
