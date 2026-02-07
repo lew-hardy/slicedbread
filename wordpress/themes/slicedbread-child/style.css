@@ -3,3 +3,10 @@ Theme Name: Slicedbread
 Template: storefront
 Version: 1.0.0
 */
+
+@media (min-width: 1025px) {
+ .quantity {
+  width: 200px;
+  margin-bottom: 35px;
+ }
+}
