@@ -127,3 +127,33 @@ Version: 1.0.0
 .sb-stock-flag--out{ opacity:0.6; }
 
 
+/* =========================
+    Accordion Styles
+    ========================= */
+
+.sb-accordions {
+  margin-top: 1.5rem;
+  border-top: 1px solid #000;
+}
+
+.sb-accordion {
+  border-bottom: 1px solid #000;
+  padding: 0.75rem 0;
+}
+
+.sb-accordion__title {
+  cursor: pointer;
+  list-style: none;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 0.85rem;
+}
+
+.sb-accordion__title::-webkit-details-marker {
+  display: none;
+}
+
+.sb-accordion__content {
+  padding-top: 0.75rem;
+  font-size: 0.95rem;
+}
