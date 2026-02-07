@@ -20,16 +20,4 @@ add_action('wp', function () {
   if (!function_exists('is_product') || !is_product()) {
     return;
   }
-
-  // Remove default Add to Cart
-  remove_action(
-    'woocommerce_single_product_summary',
-    'woocommerce_template_single_add_to_cart',
-    30
-  );
-
-  // Add Request a Quote button
-  add_action('woocommerce_single_product_summary', function () {
-    echo '<a href="#" class="button popmake-36">Request a Quote</a>';
-  }, 30);
 });
