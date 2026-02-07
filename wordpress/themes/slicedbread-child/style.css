@@ -10,3 +10,101 @@ Version: 1.0.0
   margin-bottom: 35px;
  }
 }
+
+
+/* =========================
+   Request a Quote – Form
+   ========================= */
+
+.rq-title {
+  font-size: 1.5rem;
+  margin-bottom: 1.5rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  text-align: center;
+}
+
+/* Grid system */
+.rq-grid {
+  display: grid;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.rq-grid--1 {
+  grid-template-columns: 1fr;
+}
+
+.rq-grid--2 {
+  grid-template-columns: 1fr 1fr;
+}
+
+@media (max-width: 640px) {
+  .rq-grid--2 {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Fields */
+.rq-field {
+  display: flex;
+  flex-direction: column;
+}
+
+.rq-field label {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 0.25rem;
+  color: #333;
+}
+
+/* Inputs */
+.rq-field input,
+.rq-field select,
+.rq-field textarea {
+  border: none;
+  border-bottom: 1px solid #000;
+  padding: 0.5rem 0;
+  font-size: 0.9rem;
+  background: transparent;
+  border-radius: 0;
+}
+
+.rq-field textarea {
+  resize: vertical;
+  min-height: 100px;
+}
+
+/* Remove default CF7 styles */
+.wpcf7 input:focus,
+.wpcf7 select:focus,
+.wpcf7 textarea:focus {
+  outline: none;
+  box-shadow: none;
+}
+
+/* Phone layout tweaks */
+.rq-phone .rq-field--compact select {
+  max-width: 100px;
+}
+
+/* Actions */
+.rq-actions {
+  margin-top: 2rem;
+}
+
+.rq-submit {
+  background: #000;
+  color: #fff;
+  padding: 0.75rem 2rem;
+  text-transform: uppercase;
+  border: none;
+  cursor: pointer;
+  font-size: 0.85rem;
+  letter-spacing: 0.08em;
+}
+
+.rq-submit:hover {
+  opacity: 0.85;
+}
