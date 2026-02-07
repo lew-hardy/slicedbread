@@ -108,3 +108,22 @@ Version: 1.0.0
 .rq-submit:hover {
   opacity: 0.85;
 }
+
+
+
+/* =========================
+   In Stock / Out of Stock Flags
+   ========================= */
+
+.sb-stock-flag{
+  display:inline-block;
+  padding:0.35rem 0.6rem;
+  border:1px solid #000;
+  text-transform:uppercase;
+  letter-spacing:0.08em;
+  font-size:0.75rem;
+  margin:0.5rem 0 1rem;
+}
+.sb-stock-flag--out{ opacity:0.6; }
+
+
