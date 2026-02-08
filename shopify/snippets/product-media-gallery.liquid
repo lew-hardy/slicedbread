@@ -63,10 +63,17 @@
     >
       {%- if product.selected_or_first_available_variant.featured_media != null -%}
         {%- assign featured_media = product.selected_or_first_available_variant.featured_media -%}
+
+        {%- assign sb_featured_color = '' -%}
+        {%- if featured_media.alt contains 'Color:' -%}
+          {%- assign sb_featured_color = featured_media.alt | split: 'Color:' | last | strip | handleize -%}
+        {%- endif -%}
+
         <li
           id="Slide-{{ section.id }}-{{ featured_media.id }}"
           class="product__media-item grid__item slider__slide is-active{% if single_media_visible %} product__media-item--single{% endif %}{% if featured_media.media_type != 'image' %} product__media-item--full{% endif %}{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--fade-in{% endif %}"
           data-media-id="{{ section.id }}-{{ featured_media.id }}"
+          data-sb-color="{{ sb_featured_color }}"
         >
           {%- assign media_position = 1 -%}
           {% render 'product-thumbnail',
@@ -86,6 +93,11 @@
         </li>
       {%- endif -%}
       {%- for media in product.media -%}
+        {%- assign sb_color = '' -%}
+        {%- if media.alt contains 'Color:' -%}
+          {%- assign sb_color = media.alt | split: 'Color:' | last | strip | handleize -%}
+        {%- endif -%}
+
         {% if media_position >= limit
           or media_position >= 1
           and section.settings.hide_variants
@@ -99,6 +111,7 @@
             id="Slide-{{ section.id }}-{{ media.id }}"
             class="product__media-item grid__item slider__slide{% if single_media_visible %} product__media-item--single{% endif %}{% if product.selected_or_first_available_variant.featured_media == nil and forloop.index == 1 %} is-active{% endif %}{% if media.media_type != 'image' %} product__media-item--full{% endif %}{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--fade-in{% endif %}"
             data-media-id="{{ section.id }}-{{ media.id }}"
+            data-sb-color="{{ sb_color }}"
           >
             {%- liquid
               assign media_position = media_position | default: 0 | plus: 1
@@ -221,11 +234,18 @@
             endcapture
             assign media_index = media_index | plus: 1
           -%}
+
+          {%- assign sb_featured_thumb_color = '' -%}
+          {%- if featured_media.alt contains 'Color:' -%}
+            {%- assign sb_featured_thumb_color = featured_media.alt | split: 'Color:' | last | strip | handleize -%}
+          {%- endif -%}
+
           <li
             id="Slide-Thumbnails-{{ section.id }}-0"
             class="thumbnail-list__item slider__slide{% if section.settings.hide_variants and variant_images contains featured_media.src %} thumbnail-list_item--variant{% endif %}"
             data-target="{{ section.id }}-{{ featured_media.id }}"
             data-media-position="{{ media_index }}"
+            data-sb-color="{{ sb_featured_thumb_color }}"
           >
             {%- capture thumbnail_id -%}
               Thumbnail-{{ section.id }}-0
@@ -252,6 +272,12 @@
           </li>
         {%- endif -%}
         {%- for media in product.media -%}
+
+          {%- assign sb_thumb_color = '' -%}
+          {%- if media.alt contains 'Color:' -%}
+            {%- assign sb_thumb_color = media.alt | split: 'Color:' | last | strip | handleize -%}
+          {%- endif -%}
+
           {%- unless media.id == product.selected_or_first_available_variant.featured_media.id -%}
             {%- liquid
               capture media_index
@@ -270,6 +296,7 @@
               class="thumbnail-list__item slider__slide{% if section.settings.hide_variants and variant_images contains media.src %} thumbnail-list_item--variant{% endif %}"
               data-target="{{ section.id }}-{{ media.id }}"
               data-media-position="{{ media_index }}"
+              data-sb-color="{{ sb_thumb_color }}"
             >
               {%- if media.media_type == 'model' -%}
                 <span class="thumbnail__badge" aria-hidden="true">
@@ -330,3 +357,6 @@
     </slider-component>
   {%- endif -%}
 </media-gallery>
+
+{% comment %} Load Swatch Selector JS {% endcomment %}
+{{ 'sb-media-by-color.js' | asset_url | script_tag }}
