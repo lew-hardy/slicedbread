@@ -25,6 +25,29 @@ reloading the page.
 This approach keeps image management fully CMS-driven and avoids the need for
 duplicate products or hardcoded image mappings.
 
+---
+
+## Shopify PDP Swatches (HEX & Image-Based)
+
+Color swatches are managed using Shopify’s native **Color metaobjects**.
+
+Setup:
+- Create Color entries under **Content → Metaobjects → Color**
+- Each Color entry may define:
+  - A HEX color
+  - An optional image swatch (e.g. material or texture)
+- On each product, assign the relevant Color entries via the
+  `color_swatches` product metafield
+
+The PDP will automatically:
+- Render image-based swatches when provided
+- Fall back to HEX-based swatches when no image is present
+- Gracefully fall back to default theme behaviour if no metaobject is assigned
+
+Swatch selection drives both variant selection and color-based image switching.
+
+---
+
 ## WordPress Plugins
 
 The following third-party plugins are used for the WordPress portion of this test
