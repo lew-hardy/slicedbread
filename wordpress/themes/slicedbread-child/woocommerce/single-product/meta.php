@@ -31,7 +31,7 @@ $in_stock = $product->is_in_stock();
 
   <?php if (wc_product_sku_enabled() && ($product->get_sku() || $product->is_type(ProductType::VARIABLE))) : ?>
     <span class="sku_wrapper">
-      <?php esc_html_e('SKU:', 'woocommerce'); ?>
+      <?php esc_html_e('Item No.:', 'woocommerce'); ?>
       <span class="sku"><?php echo $product->get_sku() ? esc_html($product->get_sku()) : esc_html__('N/A', 'woocommerce'); ?></span>
     </span>
   <?php endif; ?>
