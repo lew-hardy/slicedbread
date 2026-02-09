@@ -1,0 +1,86 @@
+{%- comment -%}
+  PDP block content: Others Like You Also Bought
+  Inputs:
+  - product
+  - block (for settings)
+{%- endcomment -%}
+
+{%- liquid
+  assign mode = block.settings.mode
+  assign title = block.settings.title | default: 'Others Like You Also Bought'
+  assign current_id = product.id
+-%}
+
+{%- if mode == 'manual' -%}
+  {%- assign p1 = block.settings.product_1 -%}
+  {%- assign p2 = block.settings.product_2 -%}
+
+  {%- if p1 != blank or p2 != blank -%}
+    <div class="pdp-olyab">
+      <h2 class="pdp-olyab__title h4">{{ title }}</h2>
+
+      <div class="pdp-olyab__grid">
+        {%- if p1 != blank and p1.id != current_id -%}
+          {% render 'card-product',
+            card_product: p1,
+            show_secondary_image: true,
+            lazy_load: true
+          %}
+        {%- endif -%}
+
+        {%- if p2 != blank and p2.id != current_id and p2.id != p1.id -%}
+          {% render 'card-product',
+            card_product: p2,
+            show_secondary_image: true,
+            lazy_load: true
+          %}
+        {%- endif -%}
+      </div>
+    </div>
+  {%- endif -%}
+
+{%- else -%}
+  {%- assign c = block.settings.collection -%}
+
+  {%- if c != blank and c.products_count > 0 -%}
+    {%- liquid
+      assign total = c.products_count
+      assign seed = 'now' | date: '%s' | plus: 0
+      assign start = seed | modulo: total
+      assign rendered = 0
+    -%}
+
+    <div class="pdp-olyab">
+      <h2 class="pdp-olyab__title h4">{{ title }}</h2>
+
+      <div class="pdp-olyab__grid">
+        {%- for p in c.products offset: start -%}
+          {%- if rendered < 2 and p.id != current_id -%}
+            {% render 'card-product',
+              card_product: p,
+              show_secondary_image: true,
+              lazy_load: true
+            %}
+            {%- assign rendered = rendered | plus: 1 -%}
+          {%- endif -%}
+          {%- if rendered >= 2 -%}{% break %}{%- endif -%}
+        {%- endfor -%}
+
+        {%- if rendered < 2 -%}
+          {%- for p in c.products -%}
+            {%- if forloop.index0 >= start -%}{% break %}{%- endif -%}
+            {%- if rendered < 2 and p.id != current_id -%}
+              {% render 'card-product',
+                card_product: p,
+                show_secondary_image: true,
+                lazy_load: true
+              %}
+              {%- assign rendered = rendered | plus: 1 -%}
+            {%- endif -%}
+            {%- if rendered >= 2 -%}{% break %}{%- endif -%}
+          {%- endfor -%}
+        {%- endif -%}
+      </div>
+    </div>
+  {%- endif -%}
+{%- endif -%}

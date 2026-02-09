@@ -3596,7 +3596,7 @@ details-disclosure > details {
   }
 }
 
-/* Swatch Color Managment CSS */
+/* Swatch Color Managment */
 .sb-swatch__dot,
 .sb-swatch__img {
   width: 22px;
@@ -3615,4 +3615,13 @@ details-disclosure > details {
   display: inline-flex;
   align-items: center;
   justify-content: center;
+}
+
+
+/* PDP Others Like You */
+.pdp-olyab { margin-top: 1.5rem; }
+.pdp-olyab__grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
 }

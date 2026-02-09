@@ -674,6 +674,9 @@
                 </product-recommendations>
               {%- when 'icon-with-text' -%}
                 {% render 'icon-with-text', block: block %}
+
+              {%- when 'others_also_bought' -%}
+                {% render 'pdp-others-like-you', product: product, block: block %}
             {%- endcase -%}
           {%- endfor -%}
           <a href="{{ product.url }}" class="link product__view-details animate-arrow">
@@ -2084,6 +2087,43 @@
           "default": "t:sections.main-product.blocks.icon_with_text.settings.heading_3.default",
           "label": "t:sections.main-product.blocks.icon_with_text.settings.heading_3.label",
           "info": "t:sections.main-product.blocks.icon_with_text.settings.heading.info"
+        }
+      ]
+    },
+    {
+      "type": "others_also_bought",
+      "name": "Others also bought",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Heading",
+          "default": "Others Like You Also Bought"
+        },
+        {
+          "type": "select",
+          "id": "mode",
+          "label": "Mode",
+          "options": [
+            { "value": "auto", "label": "Automatic (collection)" },
+            { "value": "manual", "label": "Manual (select products)" }
+          ],
+          "default": "auto"
+        },
+        {
+          "type": "collection",
+          "id": "collection",
+          "label": "Collection (automatic mode)"
+        },
+        {
+          "type": "product",
+          "id": "product_1",
+          "label": "Product 1 (manual mode)"
+        },
+        {
+          "type": "product",
+          "id": "product_2",
+          "label": "Product 2 (manual mode)"
         }
       ]
     }
