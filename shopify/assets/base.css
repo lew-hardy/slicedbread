@@ -3782,7 +3782,25 @@ details-disclosure > details {
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
 }
 
-
+/* section fix */
 .shopify-section {
   margin-bottom: 30px;
+}
+
+
+
+/* Card only around core product info (title → ATC) */
+.product__info-wrapper .product__info-container {
+  background: #fff;
+  border-radius: 28px;
+  box-shadow: 0 2px 20px rgba(0,0,0,.12);
+  padding: 28px;
+}
+
+/* Remove card effect from "Others Like You Also Bought" */
+.product__info-wrapper .pdp-olyab {
+  background: none;
+  box-shadow: none;
+  padding: 0;
+  margin-top: 24px;
 }
