@@ -1,0 +1,484 @@
+{%- comment -%}
+  PDP Split Media Banner
+  - Two column layout: Text + Media
+  - Media supports desktop/mobile video or image
+  - Media can be positioned left or right
+  - Text styling controls via CSS variables
+
+  Intended usage:
+  Add as a below-the-fold section on product templates (up to 3, etc).
+{%- endcomment -%}
+
+{%- liquid
+  assign id = section.id
+
+  assign media_side = section.settings.media_side
+
+  assign desktop_type = section.settings.desktop_media_type
+  assign mobile_type = section.settings.mobile_media_type
+
+  assign desktop_video = section.settings.desktop_video
+  assign mobile_video = section.settings.mobile_video
+
+  assign desktop_image = section.settings.desktop_image
+  assign mobile_image = section.settings.mobile_image
+
+  assign heading = section.settings.heading
+  assign body = section.settings.body
+
+  assign radius = section.settings.radius
+  assign min_h_desktop = section.settings.desktop_height
+  assign min_h_mobile = section.settings.mobile_height
+
+  assign gap_desktop = section.settings.gap_desktop
+  assign pad_desktop = section.settings.padding_desktop
+  assign pad_mobile = section.settings.padding_mobile
+
+  assign text_align = section.settings.text_align
+  assign v_align = section.settings.vertical_align
+
+  assign show_controls = section.settings.show_controls
+-%}
+
+<section class="pdp-smb" id="pdp-smb-{{ id }}">
+  <div
+    class="pdp-smb__container page-width"
+    style="
+      --pdp-smb-pad-desktop: {{ pad_desktop }};
+      --pdp-smb-pad-mobile: {{ pad_mobile }};
+      --pdp-smb-gap: {{ gap_desktop }}px;
+      --pdp-smb-radius: {{ radius }}px;
+      --pdp-smb-height-desktop: {{ min_h_desktop }}px;
+      --pdp-smb-height-mobile: {{ min_h_mobile }}px;
+
+      --pdp-smb-text-align: {{ text_align }};
+      --pdp-smb-v-align: {{ v_align }};
+
+      --pdp-smb-heading-size: {{ section.settings.heading_size }}px;
+      --pdp-smb-body-size: {{ section.settings.body_size }}px;
+      --pdp-smb-heading-color: {{ section.settings.heading_color }};
+      --pdp-smb-body-color: {{ section.settings.body_color }};
+      --pdp-smb-text-max-width: {{ section.settings.text_max_width }}px;
+      --pdp-smb-text-shadow: {{ section.settings.text_shadow }};
+    "
+  >
+    <div class="pdp-smb__grid pdp-smb__grid--{{ media_side }}">
+      <div class="pdp-smb__text pdp-smb__text--{{ v_align }}">
+        <div class="pdp-smb__text-inner">
+          {%- if heading != blank -%}
+            <h2 class="pdp-smb__heading">{{ heading }}</h2>
+          {%- endif -%}
+          {%- if body != blank -%}
+            <div class="pdp-smb__body rte">
+              {{ body }}
+            </div>
+          {%- endif -%}
+        </div>
+      </div>
+
+      <div class="pdp-smb__media">
+        <div class="pdp-smb__media-desktop">
+          {%- if desktop_type == 'video' and desktop_video != blank -%}
+            {{
+              desktop_video
+              | video_tag: autoplay: true, loop: true, muted: true, controls: show_controls, playsinline: true
+            }}
+          {%- elsif desktop_type == 'image' and desktop_image != blank -%}
+            {{ desktop_image | image_url: width: 2400 | image_tag: loading: 'lazy' }}
+          {%- endif -%}
+        </div>
+
+        <div class="pdp-smb__media-mobile">
+          {%- if mobile_type == 'video' and mobile_video != blank -%}
+            {{
+              mobile_video
+              | video_tag: autoplay: true, loop: true, muted: true, controls: show_controls, playsinline: true
+            }}
+          {%- elsif mobile_type == 'image' and mobile_image != blank -%}
+            {{ mobile_image | image_url: width: 1400 | image_tag: loading: 'lazy' }}
+          {%- else -%}
+            {%- comment -%} Fallback to desktop media if mobile isn't set {%- endcomment -%}
+            {%- if desktop_type == 'video' and desktop_video != blank -%}
+              {{
+                desktop_video
+                | video_tag: autoplay: true, loop: true, muted: true, controls: show_controls, playsinline: true
+              }}
+            {%- elsif desktop_type == 'image' and desktop_image != blank -%}
+              {{ desktop_image | image_url: width: 1400 | image_tag: loading: 'lazy' }}
+            {%- endif -%}
+          {%- endif -%}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  (function () {
+    const root = document.getElementById('pdp-smb-{{ id }}');
+    if (!root) return;
+
+    const videos = root.querySelectorAll('video');
+    videos.forEach((video) => {
+      video.muted = true;
+      video.setAttribute('muted', '');
+      video.setAttribute('playsinline', '');
+      video.setAttribute('webkit-playsinline', '');
+      video.autoplay = true;
+      video.setAttribute('autoplay', '');
+      video.loop = true;
+
+      const tryPlay = () => {
+        const p = video.play();
+        if (p && typeof p.catch === 'function') p.catch(() => {});
+      };
+
+      tryPlay();
+      video.addEventListener('loadedmetadata', tryPlay, { once: true });
+      video.addEventListener('canplay', tryPlay, { once: true });
+    });
+  })();
+</script>
+
+{% style %}
+  #pdp-smb-{{ id }} .pdp-smb__container { padding: var(--pdp-smb-pad-mobile); }
+  @media (min-width: 750px) {
+    #pdp-smb-{{ id }} .pdp-smb__container { padding: var(--pdp-smb-pad-desktop); }
+  }
+
+  #pdp-smb-{{ id }} .pdp-smb__grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* ALWAYS side-by-side */
+    gap: 16px;
+    border-radius: var(--pdp-smb-radius);
+    overflow: hidden;
+    background: #fff;
+    box-shadow: 0 2px 16px rgba(0,0,0,.08);
+    min-height: var(--pdp-smb-height-mobile);
+    align-items: start;
+  }
+
+
+  @media (min-width: 990px) {
+    #pdp-smb-{{ id }} .pdp-smb__grid {
+      grid-template-columns: 1fr 1fr;
+      gap: var(--pdp-smb-gap);
+      align-items: start;
+      min-height: var(--pdp-smb-height-desktop);
+    }
+  }
+
+  /* Side switching */
+  @media (min-width: 990px) {
+    /* Side switching (applies at all widths) */
+    #pdp-smb-{{ id }} .pdp-smb__grid--right .pdp-smb__text { order: 1; }
+    #pdp-smb-{{ id }} .pdp-smb__grid--right .pdp-smb__media { order: 2; }
+
+    #pdp-smb-{{ id }} .pdp-smb__grid--left .pdp-smb__media { order: 1; }
+    #pdp-smb-{{ id }} .pdp-smb__grid--left .pdp-smb__text { order: 2; }
+  }
+
+  #pdp-smb-{{ id }} .pdp-smb__text {
+    display: flex;
+    justify-content: center;
+    text-align: var(--pdp-smb-text-align);
+    padding: 32px 20px;
+    align-self: center;
+  }
+
+  /* Ensure grid children stay in their columns and stretch */
+  #pdp-smb-{{ id }} .pdp-smb__text {
+    min-width: 0;
+  }
+
+  #pdp-smb-{{ id }} .pdp-smb__text--top { align-items: flex-start; }
+  #pdp-smb-{{ id }} .pdp-smb__text--center { align-items: center; }
+  #pdp-smb-{{ id }} .pdp-smb__text--bottom { align-items: flex-end; }
+
+  #pdp-smb-{{ id }} .pdp-smb__text-inner {
+    max-width: var(--pdp-smb-text-max-width);
+    width: 100%;
+  }
+
+  #pdp-smb-{{ id }} .pdp-smb__heading {
+    font-size: var(--pdp-smb-heading-size);
+    color: var(--pdp-smb-heading-color);
+    margin: 0 0 12px;
+    text-shadow: var(--pdp-smb-text-shadow);
+    line-height: 1.05;
+  }
+
+  #pdp-smb-{{ id }} .pdp-smb__body,
+  #pdp-smb-{{ id }} .pdp-smb__body * {
+    font-size: var(--pdp-smb-body-size);
+    color: var(--pdp-smb-body-color);
+    text-shadow: var(--pdp-smb-text-shadow);
+  }
+
+  #pdp-smb-{{ id }} .pdp-smb__media {
+    width: 100%;
+    
+    position: relative;
+    background: #000;
+
+    /* Make media smaller */
+    max-height: 420px;
+    height: auto;
+    align-self: center;
+    overflow: hidden;
+    border-radius: var(--pdp-smb-radius);
+
+    /* Give it a sensible minimum so it doesn’t get too tiny */
+    min-height: 240px;
+  }
+
+  /* Optional: allow a bit more height on larger screens */
+  @media (min-width: 990px) {
+    #pdp-smb-{{ id }} .pdp-smb__media {
+      max-height: 520px;
+    }
+  }
+
+  #pdp-smb-{{ id }} .pdp-smb__media-desktop,
+  #pdp-smb-{{ id }} .pdp-smb__media-mobile {
+    width: 100%;
+    height: 100%;
+  }
+
+  #pdp-smb-{{ id }} .pdp-smb__media video,
+  #pdp-smb-{{ id }} .pdp-smb__media img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  /* Desktop/mobile media swap */
+  #pdp-smb-{{ id }} .pdp-smb__media-desktop { display: none; }
+  #pdp-smb-{{ id }} .pdp-smb__media-mobile { display: block; }
+
+  @media (min-width: 750px) {
+    #pdp-smb-{{ id }} .pdp-smb__media-desktop { display: block; }
+    #pdp-smb-{{ id }} .pdp-smb__media-mobile { display: none; }
+  }
+{% endstyle %}
+
+{% schema %}
+{
+  "name": "PDP split banner",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "select",
+      "id": "media_side",
+      "label": "Media side (desktop)",
+      "options": [
+        { "value": "right", "label": "Right" },
+        { "value": "left", "label": "Left" }
+      ],
+      "default": "right"
+    },
+    {
+      "type": "range",
+      "id": "desktop_height",
+      "label": "Desktop min height (px)",
+      "min": 300,
+      "max": 900,
+      "step": 10,
+      "default": 520
+    },
+    {
+      "type": "range",
+      "id": "mobile_height",
+      "label": "Mobile min height (px)",
+      "min": 260,
+      "max": 900,
+      "step": 10,
+      "default": 520
+    },
+    {
+      "type": "range",
+      "id": "gap_desktop",
+      "label": "Desktop column gap (px)",
+      "min": 0,
+      "max": 60,
+      "step": 2,
+      "default": 24
+    },
+    {
+      "type": "range",
+      "id": "radius",
+      "label": "Corner radius (px)",
+      "min": 0,
+      "max": 40,
+      "step": 1,
+      "default": 24
+    },
+    {
+      "type": "text",
+      "id": "padding_desktop",
+      "label": "Section padding (desktop)",
+      "default": "20px 20px"
+    },
+    {
+      "type": "text",
+      "id": "padding_mobile",
+      "label": "Section padding (mobile)",
+      "default": "16px 16px"
+    },
+
+    {
+      "type": "header",
+      "content": "Media"
+    },
+    {
+      "type": "select",
+      "id": "desktop_media_type",
+      "label": "Desktop media type",
+      "options": [
+        { "value": "video", "label": "Video" },
+        { "value": "image", "label": "Image" }
+      ],
+      "default": "image"
+    },
+    {
+      "type": "video",
+      "id": "desktop_video",
+      "label": "Desktop video"
+    },
+    {
+      "type": "image_picker",
+      "id": "desktop_image",
+      "label": "Desktop image"
+    },
+
+    {
+      "type": "select",
+      "id": "mobile_media_type",
+      "label": "Mobile media type",
+      "options": [
+        { "value": "video", "label": "Video" },
+        { "value": "image", "label": "Image" }
+      ],
+      "default": "image"
+    },
+    {
+      "type": "video",
+      "id": "mobile_video",
+      "label": "Mobile video"
+    },
+    {
+      "type": "image_picker",
+      "id": "mobile_image",
+      "label": "Mobile image"
+    },
+
+    {
+      "type": "header",
+      "content": "Text"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Showcase Your iPhone"
+    },
+    {
+      "type": "richtext",
+      "id": "body",
+      "label": "Body"
+    },
+    {
+      "type": "select",
+      "id": "text_align",
+      "label": "Text align",
+      "options": [
+        { "value": "left", "label": "Left" },
+        { "value": "center", "label": "Center" },
+        { "value": "right", "label": "Right" }
+      ],
+      "default": "left"
+    },
+    {
+      "type": "select",
+      "id": "vertical_align",
+      "label": "Vertical align",
+      "options": [
+        { "value": "top", "label": "Top" },
+        { "value": "center", "label": "Center" },
+        { "value": "bottom", "label": "Bottom" }
+      ],
+      "default": "center"
+    },
+
+    {
+      "type": "header",
+      "content": "Text styles"
+    },
+    {
+      "type": "range",
+      "id": "heading_size",
+      "label": "Heading size (px)",
+      "min": 18,
+      "max": 80,
+      "step": 1,
+      "default": 56
+    },
+    {
+      "type": "range",
+      "id": "body_size",
+      "label": "Body size (px)",
+      "min": 12,
+      "max": 26,
+      "step": 1,
+      "default": 18
+    },
+    {
+      "type": "color",
+      "id": "heading_color",
+      "label": "Heading color",
+      "default": "#111111"
+    },
+    {
+      "type": "color",
+      "id": "body_color",
+      "label": "Body color",
+      "default": "#111111"
+    },
+    {
+      "type": "range",
+      "id": "text_max_width",
+      "label": "Text max width (px)",
+      "min": 280,
+      "max": 1100,
+      "step": 10,
+      "default": 520
+    },
+    {
+      "type": "text",
+      "id": "text_shadow",
+      "label": "Text shadow (CSS)",
+      "default": "none"
+    },
+
+    {
+      "type": "header",
+      "content": "Video options"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_controls",
+      "label": "Show video controls",
+      "default": false
+    }
+  ],
+  "presets": [
+    {
+      "name": "PDP split banner"
+    }
+  ]
+}
+{% endschema %}
