@@ -1,0 +1,39 @@
+{%- comment -%}
+  PDP Recommendation Card (Nomad-style)
+  Usage: {% render 'pdp-rec-card', product: product %}
+{%- endcomment -%}
+
+{%- assign v = product.selected_or_first_available_variant -%}
+
+<article class="pdp-rec-card">
+  <a class="pdp-rec-card__link" href="{{ product.url }}">
+    <div class="pdp-rec-card__media">
+      {%- if product.featured_image -%}
+        {{
+          product.featured_image
+          | image_url: width: 220
+          | image_tag: loading: 'lazy', class: 'pdp-rec-card__img', alt: product.title
+        }}
+      {%- endif -%}
+    </div>
+
+    <div class="pdp-rec-card__body">
+      <div class="pdp-rec-card__title">{{ product.title }}</div>
+
+      {%- if product.metafields.custom.short_subtitle != blank -%}
+        <div class="pdp-rec-card__meta">{{ product.metafields.custom.short_subtitle }}</div>
+      {%- elsif product.vendor != blank -%}
+        <div class="pdp-rec-card__meta">{{ product.vendor }}</div>
+      {%- endif -%}
+
+      <div class="pdp-rec-card__price">
+        {%- if v.compare_at_price > v.price -%}
+          <span class="pdp-rec-card__compare">{{ v.compare_at_price | money }}</span>
+        {%- endif -%}
+        <span class="pdp-rec-card__current">{{ v.price | money }}</span>
+      </div>
+    </div>
+
+    <span class="pdp-rec-card__cta" aria-hidden="true">+</span>
+  </a>
+</article>

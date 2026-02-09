@@ -17,23 +17,17 @@
 
   {%- if p1 != blank or p2 != blank -%}
     <div class="pdp-olyab">
-      <h2 class="pdp-olyab__title h4">{{ title }}</h2>
+      <h2 class="pdp-rec-heading">{{ title }}:</h2>
 
-      <div class="pdp-olyab__grid">
+      <div class="pdp-rec-grid">
         {%- if p1 != blank and p1.id != current_id -%}
-          {% render 'card-product',
-            card_product: p1,
-            show_secondary_image: true,
-            lazy_load: true
-          %}
+          {% render 'pdp-rec-card', product: p1 %}
         {%- endif -%}
 
-        {%- if p2 != blank and p2.id != current_id and p2.id != p1.id -%}
-          {% render 'card-product',
-            card_product: p2,
-            show_secondary_image: true,
-            lazy_load: true
-          %}
+        {%- if p2 != blank and p2.id != current_id and p1 != blank and p2.id != p1.id -%}
+          {% render 'pdp-rec-card', product: p2 %}
+        {%- elsif p2 != blank and p2.id != current_id and p1 == blank -%}
+          {% render 'pdp-rec-card', product: p2 %}
         {%- endif -%}
       </div>
     </div>
@@ -51,16 +45,12 @@
     -%}
 
     <div class="pdp-olyab">
-      <h2 class="pdp-olyab__title h4">{{ title }}</h2>
+      <h2 class="pdp-rec-heading">{{ title }}:</h2>
 
-      <div class="pdp-olyab__grid">
+      <div class="pdp-rec-grid">
         {%- for p in c.products offset: start -%}
           {%- if rendered < 2 and p.id != current_id -%}
-            {% render 'card-product',
-              card_product: p,
-              show_secondary_image: true,
-              lazy_load: true
-            %}
+            {% render 'pdp-rec-card', product: p %}
             {%- assign rendered = rendered | plus: 1 -%}
           {%- endif -%}
           {%- if rendered >= 2 -%}{% break %}{%- endif -%}
@@ -70,11 +60,7 @@
           {%- for p in c.products -%}
             {%- if forloop.index0 >= start -%}{% break %}{%- endif -%}
             {%- if rendered < 2 and p.id != current_id -%}
-              {% render 'card-product',
-                card_product: p,
-                show_secondary_image: true,
-                lazy_load: true
-              %}
+              {% render 'pdp-rec-card', product: p %}
               {%- assign rendered = rendered | plus: 1 -%}
             {%- endif -%}
             {%- if rendered >= 2 -%}{% break %}{%- endif -%}
