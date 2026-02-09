@@ -3595,3 +3595,24 @@ details-disclosure > details {
     transform: translateX(100%) scaleX(0);
   }
 }
+
+/* Swatch Color Managment CSS */
+.sb-swatch__dot,
+.sb-swatch__img {
+  width: 22px;
+  height: 22px;
+  border-radius: 999px;
+  display: inline-block;
+  border: 1px solid rgba(0,0,0,0.2);
+}
+
+.sb-swatch__img {
+  object-fit: cover;
+  display: block;
+}
+
+.sb-swatch-label {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}

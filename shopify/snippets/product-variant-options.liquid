@@ -7,7 +7,6 @@
   - block: {Object} block object.
   - picker_type: {String} type of picker to dispay
 
-
   Usage:
   {% render 'product-variant-options',
     product: product,
@@ -16,12 +15,22 @@
     picker_type: picker_type
   %}
 {% endcomment %}
+
 {%- liquid
   assign product_form_id = 'product-form-' | append: section.id
+
+  # Product metafield: list of Shopify "Color" metaobjects (shopify--color-pattern)
+  # Must be created as: product.metafields.custom.color_swatches (List of metaobjects)
+  assign sb_color_swatches = product.metafields.custom.color_swatches.value
 -%}
 
 {%- for value in option.values -%}
   {%- liquid
+    # --- IMPORTANT: reset per-iteration custom swatch vars (Liquid vars persist otherwise) ---
+    assign sb_custom_swatch_image = null
+    assign sb_custom_swatch_color = null
+
+    # --- Default Dawn swatch values (fallback) ---
     assign swatch_focal_point = null
     if value.swatch.image
       assign image_url = value.swatch.image | image_url: width: 50
@@ -31,6 +40,35 @@
       assign swatch_value = 'rgb(' | append: value.swatch.color.rgb | append: ')'
     else
       assign swatch_value = null
+    endif
+
+    # --- Custom swatch override for Color option using metaobjects ---
+    if option.name == 'Color' and sb_color_swatches != blank
+      assign sb_value_key = value | handleize
+
+      for sw in sb_color_swatches
+        assign sw_label_handle = sw.label.value | handleize
+        if sw.label.value != blank and sw_label_handle == sb_value_key
+          # Prefer image, otherwise use hex color
+          if sw.image.value != blank
+            assign sb_custom_swatch_image = sw.image.value
+          endif
+          if sw.color.value != blank
+            assign sb_custom_swatch_color = sw.color.value
+          endif
+          break
+        endif
+      endfor
+
+      # Override Dawn's swatch_value used by swatch_dropdown
+      if sb_custom_swatch_image != null
+        assign image_url = sb_custom_swatch_image | image_url: width: 50
+        assign swatch_value = 'url(' | append: image_url | append: ')'
+        assign swatch_focal_point = null
+      elsif sb_custom_swatch_color != null
+        assign swatch_value = sb_custom_swatch_color
+        assign swatch_focal_point = null
+      endif
     endif
 
     assign option_disabled = true
@@ -66,19 +104,66 @@
       {{ label_unavailable }}
     {%- endcapture -%}
 
-    {%
-      render 'swatch-input',
-      id: input_id,
-      name: input_name,
-      value: escaped_value,
-      swatch: value.swatch,
-      product_form_id: product_form_id,
-      checked: value.selected,
-      visually_disabled: option_disabled,
-      shape: block.settings.swatch_shape,
-      help_text: help_text,
-      additional_props: input_dataset
-    %}
+    {%- liquid
+      assign has_custom_swatch = false
+      if sb_custom_swatch_image != null or sb_custom_swatch_color != null
+        assign has_custom_swatch = true
+      endif
+    -%}
+
+    {%- if option.name == 'Color' and has_custom_swatch -%}
+      {%- capture sb_swatch -%}
+        {%- if sb_custom_swatch_image != null -%}
+          <img
+            class="sb-swatch__img"
+            src="{{ sb_custom_swatch_image | image_url: width: 64 }}"
+            alt="{{ escaped_value }}"
+            loading="lazy"
+            height=""
+            width=""
+          >
+        {%- else -%}
+          <span
+            class="sb-swatch__dot"
+            style="background-color: {{ sb_custom_swatch_color }};"
+            aria-hidden="true"
+          ></span>
+        {%- endif -%}
+      {%- endcapture -%}
+
+      <input
+        type="radio"
+        id="{{ input_id }}"
+        name="{{ input_name | escape }}"
+        value="{{ escaped_value }}"
+        form="{{ product_form_id }}"
+        {% if value.selected %}
+          checked
+        {% endif %}
+        {% if option_disabled %}
+          class="disabled"
+        {% endif %}
+        {{ input_dataset }}
+      >
+      <label for="{{ input_id }}" class="sb-swatch-label">
+        {{ sb_swatch }}
+        {{ help_text }}
+      </label>
+    {%- else -%}
+      {% render 'swatch-input',
+        id: input_id,
+        name: input_name,
+        value: escaped_value,
+        swatch: value.swatch,
+        product_form_id: product_form_id,
+        checked: value.selected,
+        visually_disabled: option_disabled,
+        shape: block.settings.swatch_shape,
+        help_text: help_text,
+        additional_props: input_dataset
+      %}
+    {%- endif -%}
+
   {%- elsif picker_type == 'button' -%}
     <input
       type="radio"
@@ -98,6 +183,7 @@
       {{ value -}}
       {{ label_unavailable }}
     </label>
+
   {%- elsif picker_type == 'dropdown' or picker_type == 'swatch_dropdown' -%}
     <option
       id="{{ input_id }}"
