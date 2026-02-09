@@ -16,9 +16,14 @@
           "type": "title",
           "settings": {}
         },
-        "description": {
-          "type": "description",
-          "settings": {}
+        "collapsible_tab_FmBFb4": {
+          "type": "collapsible_tab",
+          "settings": {
+            "heading": "Details",
+            "icon": "none",
+            "content": "{{ product.description }}",
+            "page": ""
+          }
         },
         "price": {
           "type": "price",
@@ -41,7 +46,7 @@
       },
       "block_order": [
         "title",
-        "description",
+        "collapsible_tab_FmBFb4",
         "price",
         "variant_picker",
         "buy_buttons"
