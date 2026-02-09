@@ -96,46 +96,107 @@
         "padding_bottom": 28
       }
     },
-    "image_banner_UqTFmp": {
-      "type": "image-banner",
-      "blocks": {
-        "text_6fNjBp": {
-          "type": "text",
-          "settings": {
-            "text": "Quality. Character. Tradition.",
-            "text_style": "body"
-          }
-        },
-        "heading_EFeTm4": {
-          "type": "heading",
-          "settings": {
-            "heading": "Horween Leather",
-            "heading_size": "h1"
-          }
-        }
-      },
-      "block_order": [
-        "text_6fNjBp",
-        "heading_EFeTm4"
-      ],
-      "name": "t:sections.image-banner.presets.name",
+    "pdp_mixed_media_banner_b3aPL9": {
+      "type": "pdp-mixed-media-banner",
+      "name": "PDP media banner",
       "settings": {
-        "image_overlay_opacity": 0,
-        "image_height": "medium",
-        "image_behavior": "none",
-        "desktop_content_position": "middle-center",
-        "desktop_content_alignment": "center",
-        "show_text_box": true,
-        "color_scheme": "",
-        "stack_images_on_mobile": true,
-        "mobile_content_alignment": "center",
-        "show_text_below": true
+        "desktop_media_type": "video",
+        "desktop_video": "shopify://files/videos/81331f7729e04924b829fc2d92bc43e9.HD-1080p-2.5Mbps-18525359.mp4",
+        "mobile_media_type": "video",
+        "mobile_video": "shopify://files/videos/81331f7729e04924b829fc2d92bc43e9.HD-1080p-2.5Mbps-18525359.mp4",
+        "heading_small": "Quality. Character. Tradition.",
+        "heading_large": "Horween Leather",
+        "body": "",
+        "eyebrow_size": 16,
+        "heading_size": 44,
+        "body_size": 16,
+        "eyebrow_color": "#FFFFFF",
+        "heading_color": "#FFFFFF",
+        "body_color": "#FFFFFF",
+        "text_max_width": 900,
+        "text_shadow": "0 2px 12px rgba(0,0,0,0.35)",
+        "media_opacity": 0.8,
+        "desktop_height": 450,
+        "mobile_height": 500,
+        "padding_desktop": "8px 20px",
+        "padding_mobile": "8px 10px",
+        "text_align": "center",
+        "vertical_align": "center",
+        "mute_video": true,
+        "show_controls": false
+      }
+    },
+    "pdp_split_media_banner_3fBaGp": {
+      "type": "pdp-split-media-banner",
+      "name": "PDP split banner",
+      "settings": {
+        "media_side": "right",
+        "desktop_height": 520,
+        "mobile_height": 520,
+        "gap_desktop": 24,
+        "radius": 24,
+        "padding_desktop": "20px 20px",
+        "padding_mobile": "16px 16px",
+        "desktop_media_type": "video",
+        "desktop_video": "shopify://files/videos/0b638eaa69344537bd4a3d2bb0c2c3d3.HD-1080p-2.5Mbps-39091690.mp4",
+        "mobile_media_type": "video",
+        "mobile_video": "shopify://files/videos/0b638eaa69344537bd4a3d2bb0c2c3d3.HD-1080p-2.5Mbps-39091690.mp4",
+        "heading": "Showcase Your iPhone",
+        "body": "<h6>Ultra-thin and precision cut, Magnetic Leather Back maintains the form factor of your iPhone while giving it a sleek and sophisticated leather look.</h6>",
+        "text_align": "left",
+        "vertical_align": "center",
+        "heading_size": 56,
+        "body_size": 18,
+        "heading_color": "#111111",
+        "body_color": "#111111",
+        "text_max_width": 520,
+        "text_shadow": "none",
+        "show_controls": false
+      }
+    },
+    "pdp_split_media_banner_fLingg": {
+      "type": "pdp-split-media-banner",
+      "name": "PDP split banner",
+      "settings": {
+        "media_side": "left",
+        "desktop_height": 520,
+        "mobile_height": 520,
+        "gap_desktop": 24,
+        "radius": 24,
+        "padding_desktop": "20px 20px",
+        "padding_mobile": "16px 16px",
+        "desktop_media_type": "video",
+        "desktop_video": "shopify://files/videos/181d25d1dd1c4f489e78292b855f12c1.HD-1080p-2.5Mbps-39092542.mp4",
+        "mobile_media_type": "video",
+        "mobile_video": "shopify://files/videos/181d25d1dd1c4f489e78292b855f12c1.HD-1080p-2.5Mbps-39092542.mp4",
+        "heading": "Snap On. Snap Off.",
+        "body": "<h6>Designed with microsuction patches and an integrated magnet array, Magnetic Leather Back stays securely attached to your iPhone day in and day out. Remove and reinstall it with a satisfying snap.</h6>",
+        "text_align": "left",
+        "vertical_align": "center",
+        "heading_size": 56,
+        "body_size": 18,
+        "heading_color": "#111111",
+        "body_color": "#111111",
+        "text_max_width": 520,
+        "text_shadow": "none",
+        "show_controls": false
+      }
+    },
+    "pdp_faq_accordion_fV3F6d": {
+      "type": "pdp-faq-accordion",
+      "name": "PDP FAQ",
+      "settings": {
+        "heading": "FAQ",
+        "faq_page": "faq"
       }
     }
   },
   "order": [
     "main",
     "related-products",
-    "image_banner_UqTFmp"
+    "pdp_mixed_media_banner_b3aPL9",
+    "pdp_split_media_banner_3fBaGp",
+    "pdp_split_media_banner_fLingg",
+    "pdp_faq_accordion_fV3F6d"
   ]
 }
