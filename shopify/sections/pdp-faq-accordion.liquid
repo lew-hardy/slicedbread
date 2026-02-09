@@ -1,0 +1,143 @@
+{%- comment -%}
+  PDP FAQ (Single Accordion)
+  - Section-level Page picker for FAQ content
+  - Renders one accordion row ("FAQ") with all page content inside
+{%- endcomment -%}
+
+{%- liquid
+  assign faq_page = section.settings.faq_page
+  assign html = ''
+  if faq_page != blank and faq_page.content != blank
+    assign html = faq_page.content
+  endif
+-%}
+
+<section class="page-width pdp-faq" id="pdp-faq-{{ section.id }}">
+  {%- if html != blank -%}
+    <details class="pdp-faq__details" id="pdp-faq-details-{{ section.id }}">
+      <summary class="pdp-faq__summary">
+        <span class="pdp-faq__title">{{ section.settings.heading }}</span>
+        <span class="pdp-faq__icon" aria-hidden="true"></span>
+      </summary>
+
+      <div class="pdp-faq__panel">
+        <div class="pdp-faq__content rte">
+          {{ html }}
+        </div>
+      </div>
+    </details>
+  {%- endif -%}
+</section>
+
+<script>
+  (function () {
+    const root = document.getElementById('pdp-faq-{{ section.id }}');
+    if (!root) return;
+
+    const details = root.querySelector('details');
+    const closeBtn = root.querySelector('.pdp-faq__close');
+
+    if (details && closeBtn) {
+      closeBtn.addEventListener('click', () => {
+        details.removeAttribute('open');
+      });
+    }
+  })();
+</script>
+
+{% style %}
+  #pdp-faq-{{ section.id }} .pdp-faq__details {
+    border-radius: 22px;
+    background: #fff;
+    box-shadow: 0 2px 18px rgba(0,0,0,.12);
+    overflow: hidden;
+  }
+
+  #pdp-faq-{{ section.id }} .pdp-faq__summary {
+    list-style: none;
+    cursor: pointer;
+    padding: 22px 26px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  #pdp-faq-{{ section.id }} .pdp-faq__summary::-webkit-details-marker { display: none; }
+
+  #pdp-faq-{{ section.id }} .pdp-faq__title {
+    font-size: 34px;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+  }
+
+  /* + when closed, × when open */
+  #pdp-faq-{{ section.id }} .pdp-faq__icon::before { content: "+"; font-size: 34px; line-height: 1; }
+  #pdp-faq-{{ section.id }} details[open] .pdp-faq__icon::before { content: "×"; }
+
+  #pdp-faq-{{ section.id }} .pdp-faq__panel {
+    position: relative;
+    padding: 26px;
+    border-top: 1px solid rgba(0,0,0,.06);
+  }
+
+  #pdp-faq-{{ section.id }} .pdp-faq__close {
+    position: absolute;
+    top: 16px;
+    right: 18px;
+    border: 0;
+    background: transparent;
+    font-size: 28px;
+    cursor: pointer;
+    line-height: 1;
+  }
+
+  #pdp-faq-{{ section.id }} .pdp-faq__content {
+    padding-top: 18px;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  /* Make H3 questions look like the screenshot */
+  #pdp-faq-{{ section.id }} .pdp-faq__content h3 {
+    font-size: 28px;
+    font-weight: 800;
+    margin: 22px 0 8px;
+    letter-spacing: -0.02em;
+  }
+  #pdp-faq-{{ section.id }} .pdp-faq__content p {
+    font-size: 18px;
+    margin: 0 0 16px;
+  }
+
+  /* Keep any <hr> subtle */
+  #pdp-faq-{{ section.id }} .pdp-faq__content hr {
+    border: 0;
+    border-top: 1px solid rgba(0,0,0,.08);
+    margin: 18px 0;
+  }
+{% endstyle %}
+
+{% schema %}
+{
+  "name": "PDP FAQ",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Accordion label",
+      "default": "FAQ"
+    },
+    {
+      "type": "page",
+      "id": "faq_page",
+      "label": "FAQ content page"
+    },
+    {
+      "type": "paragraph",
+      "content": "Tip: In the selected Page, use Heading 3 (H3) for each question. The content below each H3 becomes the answer."
+    }
+  ],
+  "presets": [
+    { "name": "PDP FAQ" }
+  ]
+}
+{% endschema %}
