@@ -42,6 +42,16 @@
             "show_dynamic_checkout": false,
             "show_gift_card_recipient": true
           }
+        },
+        "others_also_bought_4aLdEa": {
+          "type": "others_also_bought",
+          "settings": {
+            "title": "Others Like You Also Bought",
+            "mode": "manual",
+            "collection": "accessories",
+            "product_1": "usb-c-cable",
+            "product_2": "screen-protector"
+          }
         }
       },
       "block_order": [
@@ -49,7 +59,8 @@
         "collapsible_tab_FmBFb4",
         "price",
         "variant_picker",
-        "buy_buttons"
+        "buy_buttons",
+        "others_also_bought_4aLdEa"
       ],
       "settings": {
         "enable_sticky_info": true,
@@ -84,10 +95,47 @@
         "padding_top": 36,
         "padding_bottom": 28
       }
+    },
+    "image_banner_UqTFmp": {
+      "type": "image-banner",
+      "blocks": {
+        "text_6fNjBp": {
+          "type": "text",
+          "settings": {
+            "text": "Quality. Character. Tradition.",
+            "text_style": "body"
+          }
+        },
+        "heading_EFeTm4": {
+          "type": "heading",
+          "settings": {
+            "heading": "Horween Leather",
+            "heading_size": "h1"
+          }
+        }
+      },
+      "block_order": [
+        "text_6fNjBp",
+        "heading_EFeTm4"
+      ],
+      "name": "t:sections.image-banner.presets.name",
+      "settings": {
+        "image_overlay_opacity": 0,
+        "image_height": "medium",
+        "image_behavior": "none",
+        "desktop_content_position": "middle-center",
+        "desktop_content_alignment": "center",
+        "show_text_box": true,
+        "color_scheme": "",
+        "stack_images_on_mobile": true,
+        "mobile_content_alignment": "center",
+        "show_text_below": true
+      }
     }
   },
   "order": [
     "main",
-    "related-products"
+    "related-products",
+    "image_banner_UqTFmp"
   ]
 }

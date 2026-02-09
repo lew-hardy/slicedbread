@@ -1,0 +1,499 @@
+{%- comment -%}
+  PDP Mixed Media Banner
+  - Desktop + mobile media (video or image)
+  - Text overlay (heading + subheading + optional richtext)
+  - Configurable height, padding, opacity, alignment
+
+  Intended usage:
+  Add up to 3 of this section below the fold on product templates.
+{%- endcomment -%}
+
+{%- liquid
+  assign id = section.id
+
+  assign desktop_type = section.settings.desktop_media_type
+  assign mobile_type = section.settings.mobile_media_type
+
+  assign desktop_video = section.settings.desktop_video
+  assign mobile_video = section.settings.mobile_video
+
+  assign desktop_image = section.settings.desktop_image
+  assign mobile_image = section.settings.mobile_image
+
+  assign heading_small = section.settings.heading_small
+  assign heading_large = section.settings.heading_large
+  assign body_rte = section.settings.body
+
+  assign opacity = section.settings.media_opacity
+
+  assign height_desktop = section.settings.desktop_height
+  assign height_mobile = section.settings.mobile_height
+
+  assign pad_desktop = section.settings.padding_desktop
+  assign pad_mobile = section.settings.padding_mobile
+
+  assign text_align = section.settings.text_align
+  assign v_align = section.settings.vertical_align
+
+  assign show_controls = section.settings.show_controls
+  assign mute_video = section.settings.mute_video
+-%}
+
+<section class="pdp-mmb" id="pdp-mmb-{{ id }}">
+  <div
+    class="pdp-mmb__container page-width"
+    style="--pdp-mmb-pad-desktop: {{ pad_desktop }}; --pdp-mmb-pad-mobile: {{ pad_mobile }};"
+  >
+    <div
+      class="pdp-mmb__content"
+      role="banner"
+      tabindex="0"
+      style="
+        --pdp-mmb-height-desktop: {{ height_desktop }}px;
+        --pdp-mmb-height-mobile: {{ height_mobile }}px;
+      "
+    >
+      <div class="pdp-mmb__media" style="--pdp-mmb-opacity: {{ opacity }};">
+        <div class="pdp-mmb__media-desktop">
+          {%- if desktop_type == 'video' and desktop_video != blank -%}
+            {{
+              desktop_video
+              | video_tag: autoplay: true, loop: true, muted: true, controls: show_controls, playsinline: true
+            }}
+
+          {%- elsif desktop_type == 'image' and desktop_image != blank -%}
+            {{ desktop_image | image_url: width: 2400 | image_tag: class: 'pdp-mmb__img', loading: 'lazy' }}
+          {%- endif -%}
+        </div>
+
+        <div class="pdp-mmb__media-mobile">
+          {%- if mobile_type == 'video' and mobile_video != blank -%}
+            {{
+              mobile_video
+              | video_tag: autoplay: true, loop: true, muted: true, controls: show_controls, playsinline: true
+            }}
+
+          {%- elsif mobile_type == 'image' and mobile_image != blank -%}
+            {{ mobile_image | image_url: width: 1400 | image_tag: class: 'pdp-mmb__img', loading: 'lazy' }}
+          {%- endif -%}
+        </div>
+      </div>
+
+      <div
+        class="pdp-mmb__text pdp-mmb__text--{{ v_align }}"
+        style="
+          --pdp-mmb-text-align: {{ text_align }};
+          --pdp-mmb-eyebrow-size: {{ section.settings.eyebrow_size }}px;
+          --pdp-mmb-heading-size: {{ section.settings.heading_size }}px;
+          --pdp-mmb-body-size: {{ section.settings.body_size }}px;
+          --pdp-mmb-eyebrow-color: {{ section.settings.eyebrow_color }};
+          --pdp-mmb-heading-color: {{ section.settings.heading_color }};
+          --pdp-mmb-body-color: {{ section.settings.body_color }};
+          --pdp-mmb-text-max-width: {{ section.settings.text_max_width }}px;
+          --pdp-mmb-text-shadow: {{ section.settings.text_shadow }};
+        "
+      >
+        <div class="pdp-mmb__text-inner">
+          {%- if heading_small != blank -%}
+            <h3 class="pdp-mmb__eyebrow">{{ heading_small }}</h3>
+          {%- endif -%}
+          {%- if heading_large != blank -%}
+            <h2 class="pdp-mmb__heading">{{ heading_large }}</h2>
+          {%- endif -%}
+          {%- if body_rte != blank -%}
+            <div class="pdp-mmb__body rte">
+              {{ body_rte }}
+            </div>
+          {%- endif -%}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  (function () {
+    const root = document.getElementById('pdp-mmb-{{ id }}');
+    if (!root) return;
+
+    const videos = root.querySelectorAll('video');
+    videos.forEach((video) => {
+      // Ensure autoplay-friendly attributes are present at the element level
+      video.muted = true;
+      video.setAttribute('muted', '');
+      video.setAttribute('playsinline', '');
+      video.setAttribute('webkit-playsinline', '');
+      video.autoplay = true;
+      video.setAttribute('autoplay', '');
+      video.loop = true;
+
+      // Attempt to play (required for some browsers / iOS Safari quirks)
+      const tryPlay = () => {
+        const p = video.play();
+        if (p && typeof p.catch === 'function') p.catch(() => {});
+      };
+
+      // Try immediately, and again once metadata is ready
+      tryPlay();
+      video.addEventListener('loadedmetadata', tryPlay, { once: true });
+      video.addEventListener('canplay', tryPlay, { once: true });
+    });
+  })();
+</script>
+
+{% style %}
+    #pdp-mmb-{{ id }} .pdp-mmb__container {
+      padding: var(--pdp-mmb-pad-mobile);
+    }
+    @media screen and (min-width: 750px) {
+      #pdp-mmb-{{ id }} .pdp-mmb__container {
+        padding: var(--pdp-mmb-pad-desktop);
+      }
+    }
+
+    #pdp-mmb-{{ id }} .pdp-mmb__content {
+      position: relative;
+      border-radius: 16px;
+      overflow: hidden;
+      height: var(--pdp-mmb-height-mobile);
+    }
+
+    @media screen and (min-width: 750px) {
+      #pdp-mmb-{{ id }} .pdp-mmb__content {
+        height: var(--pdp-mmb-height-desktop);
+      }
+    }
+
+    #pdp-mmb-{{ id }} .pdp-mmb__media {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      width: 100%;
+      height: 100%;
+      opacity: var(--pdp-mmb-opacity);
+    }
+
+    /* Make media wrappers fill the banner height (fixes mobile "short video" + empty space) */
+    #pdp-mmb-{{ id }} .pdp-mmb__media-desktop,
+    #pdp-mmb-{{ id }} .pdp-mmb__media-mobile {
+      width: 100%;
+      height: 100%;
+    }
+
+    #pdp-mmb-{{ id }} .pdp-mmb__media-desktop video,
+    #pdp-mmb-{{ id }} .pdp-mmb__media-desktop img,
+    #pdp-mmb-{{ id }} .pdp-mmb__media-mobile video,
+    #pdp-mmb-{{ id }} .pdp-mmb__media-mobile img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    /* Optional: prevents any “flash” behind video on load */
+    #pdp-mmb-{{ id }} .pdp-mmb__media {
+      background: #000;
+    }
+
+    /* Desktop/mobile media swap */
+    #pdp-mmb-{{ id }} .pdp-mmb__media-desktop { display: none; }
+    #pdp-mmb-{{ id }} .pdp-mmb__media-mobile { display: block; }
+
+    @media screen and (min-width: 750px) {
+      #pdp-mmb-{{ id }} .pdp-mmb__media-desktop { display: block; height: 100%; }
+      #pdp-mmb-{{ id }} .pdp-mmb__media-mobile { display: none; }
+    }
+
+    #pdp-mmb-{{ id }} .pdp-mmb__text {
+      position: absolute;
+      inset: 0;
+      z-index: 2;
+      display: flex;
+      justify-content: center;
+      text-align: var(--pdp-mmb-text-align);
+    }
+
+      /* Vertical alignment options (reliable modifier classes) */
+    #pdp-mmb-{{ id }} .pdp-mmb__text--top {
+      align-items: flex-start;
+    }
+
+    #pdp-mmb-{{ id }} .pdp-mmb__text--center {
+      align-items: center;
+    }
+
+    #pdp-mmb-{{ id }} .pdp-mmb__text--bottom {
+      align-items: flex-end;
+    }
+
+    #pdp-mmb-{{ id }} .pdp-mmb__text-inner {
+      max-width: 900px;
+      padding: 0 16px;
+    }
+
+    @media screen and (min-width: 750px) {
+      #pdp-mmb-{{ id }} .pdp-mmb__text-inner {
+        padding: 0 100px;
+      }
+    }
+
+    #pdp-mmb-{{ id }} .pdp-mmb__eyebrow {
+      margin: 0 0 8px;
+    }
+    #pdp-mmb-{{ id }} .pdp-mmb__heading {
+      margin: 0;
+    }
+
+    #pdp-mmb-{{ id }} .pdp-mmb__text-inner {
+    max-width: var(--pdp-mmb-text-max-width);
+  }
+
+  #pdp-mmb-{{ id }} .pdp-mmb__eyebrow {
+    font-size: var(--pdp-mmb-eyebrow-size);
+    color: var(--pdp-mmb-eyebrow-color);
+    text-shadow: var(--pdp-mmb-text-shadow);
+  }
+
+  #pdp-mmb-{{ id }} .pdp-mmb__heading {
+    font-size: var(--pdp-mmb-heading-size);
+    color: var(--pdp-mmb-heading-color);
+    text-shadow: var(--pdp-mmb-text-shadow);
+  }
+
+  #pdp-mmb-{{ id }} .pdp-mmb__body,
+  #pdp-mmb-{{ id }} .pdp-mmb__body * {
+    font-size: var(--pdp-mmb-body-size);
+    color: var(--pdp-mmb-body-color);
+    text-shadow: var(--pdp-mmb-text-shadow);
+  }
+{% endstyle %}
+
+{% schema %}
+{
+  "name": "PDP media banner",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Desktop media"
+    },
+    {
+      "type": "select",
+      "id": "desktop_media_type",
+      "label": "Desktop media type",
+      "options": [
+        { "value": "video", "label": "Video" },
+        { "value": "image", "label": "Image" }
+      ],
+      "default": "video"
+    },
+    {
+      "type": "video",
+      "id": "desktop_video",
+      "label": "Desktop video"
+    },
+    {
+      "type": "image_picker",
+      "id": "desktop_image",
+      "label": "Desktop image"
+    },
+
+    {
+      "type": "header",
+      "content": "Mobile media"
+    },
+    {
+      "type": "select",
+      "id": "mobile_media_type",
+      "label": "Mobile media type",
+      "options": [
+        { "value": "video", "label": "Video" },
+        { "value": "image", "label": "Image" }
+      ],
+      "default": "video"
+    },
+    {
+      "type": "video",
+      "id": "mobile_video",
+      "label": "Mobile video"
+    },
+    {
+      "type": "image_picker",
+      "id": "mobile_image",
+      "label": "Mobile image"
+    },
+
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "text",
+      "id": "heading_small",
+      "label": "Small heading",
+      "default": "Quality. Character. Tradition."
+    },
+    {
+      "type": "text",
+      "id": "heading_large",
+      "label": "Large heading",
+      "default": "Horween Leather"
+    },
+    {
+      "type": "richtext",
+      "id": "body",
+      "label": "Body text"
+    },
+    {
+      "type": "header",
+      "content": "Text styles"
+    },
+    {
+      "type": "range",
+      "id": "eyebrow_size",
+      "label": "Small heading size (px)",
+      "min": 10,
+      "max": 28,
+      "step": 1,
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "heading_size",
+      "label": "Large heading size (px)",
+      "min": 18,
+      "max": 72,
+      "step": 1,
+      "default": 44
+    },
+    {
+      "type": "range",
+      "id": "body_size",
+      "label": "Body text size (px)",
+      "min": 12,
+      "max": 26,
+      "step": 1,
+      "default": 16
+    },
+    {
+      "type": "color",
+      "id": "eyebrow_color",
+      "label": "Small heading color",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "color",
+      "id": "heading_color",
+      "label": "Large heading color",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "color",
+      "id": "body_color",
+      "label": "Body text color",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "range",
+      "id": "text_max_width",
+      "label": "Text max width (px)",
+      "min": 320,
+      "max": 1200,
+      "step": 10,
+      "default": 900
+    },
+    {
+      "type": "text",
+      "id": "text_shadow",
+      "label": "Text shadow (CSS)",
+      "default": "0 2px 12px rgba(0,0,0,0.35)"
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "range",
+      "id": "media_opacity",
+      "label": "Media opacity",
+      "min": 0,
+      "max": 1,
+      "step": 0.1,
+      "default": 0.8
+    },
+    {
+      "type": "range",
+      "id": "desktop_height",
+      "label": "Desktop height (px)",
+      "min": 250,
+      "max": 800,
+      "step": 10,
+      "default": 450
+    },
+    {
+      "type": "range",
+      "id": "mobile_height",
+      "label": "Mobile height (px)",
+      "min": 250,
+      "max": 900,
+      "step": 10,
+      "default": 500
+    },
+    {
+      "type": "text",
+      "id": "padding_desktop",
+      "label": "Container padding (desktop)",
+      "default": "8px 20px"
+    },
+    {
+      "type": "text",
+      "id": "padding_mobile",
+      "label": "Container padding (mobile)",
+      "default": "8px 10px"
+    },
+    {
+      "type": "select",
+      "id": "text_align",
+      "label": "Text align",
+      "options": [
+        { "value": "left", "label": "Left" },
+        { "value": "center", "label": "Center" },
+        { "value": "right", "label": "Right" }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "select",
+      "id": "vertical_align",
+      "label": "Vertical align",
+      "options": [
+        { "value": "top", "label": "Top" },
+        { "value": "center", "label": "Center" },
+        { "value": "bottom", "label": "Bottom" }
+      ],
+      "default": "center"
+    },
+
+    {
+      "type": "header",
+      "content": "Video options"
+    },
+    {
+      "type": "checkbox",
+      "id": "mute_video",
+      "label": "Mute video",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_controls",
+      "label": "Show video controls",
+      "default": false
+    }
+  ],
+  "presets": [
+    {
+      "name": "PDP media banner"
+    }
+  ]
+}
+{% endschema %}
