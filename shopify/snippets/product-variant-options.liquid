@@ -26,6 +26,10 @@
 
 {%- for value in option.values -%}
   {%- liquid
+    # --- IMPORTANT: reset per-iteration custom swatch vars (Liquid vars persist otherwise) ---
+    assign sb_custom_swatch_image = null
+    assign sb_custom_swatch_color = null
+
     # --- Default Dawn swatch values (fallback) ---
     assign swatch_focal_point = null
     if value.swatch.image
@@ -39,14 +43,12 @@
     endif
 
     # --- Custom swatch override for Color option using metaobjects ---
-    assign sb_custom_swatch_image = null
-    assign sb_custom_swatch_color = null
-
     if option.name == 'Color' and sb_color_swatches != blank
       assign sb_value_key = value | handleize
 
       for sw in sb_color_swatches
-        if sw.label.value != blank and sw.label.value | handleize == sb_value_key
+        assign sw_label_handle = sw.label.value | handleize
+        if sw.label.value != blank and sw_label_handle == sb_value_key
           # Prefer image, otherwise use hex color
           if sw.image.value != blank
             assign sb_custom_swatch_image = sw.image.value
