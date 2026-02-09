@@ -1,0 +1,216 @@
+{%- comment -%}
+  PDP Info (Single Accordion, product-specific)
+  Source of truth: product metafield custom.pdp_info (Rich text)
+
+  One accordion row ("Info") with all metafield content inside.
+{%- endcomment -%}
+
+{%- liquid
+  assign info = product.metafields.custom.pdp_info
+-%}
+
+{%- if info != blank -%}
+  <section class="page-width pdp-info" id="pdp-info-{{ section.id }}">
+    <details class="pdp-info__details" id="pdp-info-details-{{ section.id }}">
+      <summary class="pdp-info__summary">
+        <span class="pdp-info__title">{{ section.settings.heading }}</span>
+        <span class="pdp-info__icon" aria-hidden="true"></span>
+      </summary>
+
+      <div class="pdp-info__panel">
+        <div class="pdp-info__content rte">
+          {{ info | metafield_tag }}
+        </div>
+      </div>
+    </details>
+  </section>
+
+  <script>
+    (function () {
+      const root = document.getElementById('pdp-info-{{ section.id }}');
+      if (!root) return;
+
+      const wrapper = root.querySelector('.metafield-rich_text_field') || root.querySelector('.metafield-richtext');
+
+      if (!wrapper) return;
+
+      // Prevent double-wrapping if Shopify renders twice (theme editor, etc.)
+      if (wrapper.querySelector('.pdp-info__blocks')) return;
+
+      const blocks = document.createElement('div');
+      blocks.className = 'pdp-info__blocks';
+
+      const nodes = Array.from(wrapper.childNodes).filter((n) => {
+        // ignore empty text nodes
+        return !(n.nodeType === 3 && !n.textContent.trim());
+      });
+
+      let currentBlock = null;
+
+      nodes.forEach((node) => {
+        const isH3 = node.nodeType === 1 && node.tagName === 'H3';
+
+        if (isH3) {
+          currentBlock = document.createElement('div');
+          currentBlock.className = 'pdp-info__block';
+          blocks.appendChild(currentBlock);
+        }
+
+        // If content starts without an H3, still wrap it
+        if (!currentBlock) {
+          currentBlock = document.createElement('div');
+          currentBlock.className = 'pdp-info__block';
+          blocks.appendChild(currentBlock);
+        }
+
+        currentBlock.appendChild(node);
+      });
+
+      wrapper.innerHTML = '';
+      wrapper.appendChild(blocks);
+    })();
+  </script>
+
+  {% style %}
+        #pdp-info-{{ section.id }} .pdp-info__details{
+          border-radius:22px;
+          background:#fff;
+          box-shadow:0 2px 18px rgba(0,0,0,.12);
+          overflow:hidden;
+        }
+
+        #pdp-info-{{ section.id }} .pdp-info__summary{
+          list-style:none;
+          cursor:pointer;
+          padding:22px 26px;
+          display:flex;
+          align-items:center;
+          justify-content:space-between;
+        }
+        #pdp-info-{{ section.id }} .pdp-info__summary::-webkit-details-marker{ display:none; }
+
+        #pdp-info-{{ section.id }} .pdp-info__title{
+          font-size:34px;
+          font-weight:800;
+          letter-spacing:-0.02em;
+        }
+
+        /* + when closed, × when open */
+        #pdp-info-{{ section.id }} .pdp-info__icon::before{ content:"+"; font-size:34px; line-height:1; }
+        #pdp-info-{{ section.id }} details[open] .pdp-info__icon::before{ content:"×"; }
+
+        #pdp-info-{{ section.id }} .pdp-info__panel{
+          padding:26px;
+          border-top:1px solid rgba(0,0,0,.06);
+        }
+
+        /* Info content layout (metafield_tag wraps content) */
+        #pdp-info-{{ section.id }} .pdp-info__content{
+          max-width:1100px;
+          margin:0 auto;
+        }
+
+        /* Grid of blocks (each block is H3 + its content) */
+    #pdp-info-{{ section.id }} .pdp-info__blocks{
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 28px 48px;
+    }
+
+    @media (min-width: 750px){
+      #pdp-info-{{ section.id }} .pdp-info__blocks{
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (min-width: 1200px){
+      #pdp-info-{{ section.id }} .pdp-info__blocks{
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+      }
+    }
+
+    /* Each block stays intact */
+    #pdp-info-{{ section.id }} .pdp-info__block{
+      min-width: 0;
+    }
+
+    /* Headings */
+    #pdp-info-{{ section.id }} .pdp-info__content h3{
+      font-size: 22px;
+      font-weight: 800;
+      margin: 0 0 10px;
+      letter-spacing: -0.02em;
+    }
+
+    /* Lists */
+    #pdp-info-{{ section.id }} .pdp-info__content ul{
+      margin: 0;
+      padding-left: 18px;
+    }
+
+    #pdp-info-{{ section.id }} .pdp-info__content li{
+      margin: 0 0 10px;
+      line-height: 1.4;
+    }
+
+        /* Keep each heading + its content together in a column */
+        #pdp-info-{{ section.id }} .pdp-info__content h3,
+        #pdp-info-{{ section.id }} .pdp-info__content ul,
+        #pdp-info-{{ section.id }} .pdp-info__content p,
+        #pdp-info-{{ section.id }} .pdp-info__content li{
+          break-inside: avoid;
+          -webkit-column-break-inside: avoid;
+        }
+
+        /* Make each section (H3 + list) stay together within a column */
+        #pdp-info-{{ section.id }} .pdp-info__content h3,
+        #pdp-info-{{ section.id }} .pdp-info__content ul,
+        #pdp-info-{{ section.id }} .pdp-info__content p{
+          break-inside: avoid;
+          -webkit-column-break-inside: avoid;
+        }
+
+        /* Headings */
+        #pdp-info-{{ section.id }} .pdp-info__content h3{
+          font-size: 22px;
+          font-weight: 800;
+          margin: 0 0 10px;
+          letter-spacing: -0.02em;
+        }
+
+        /* Lists */
+        #pdp-info-{{ section.id }} .pdp-info__content ul{
+          margin: 0 0 18px;
+          padding-left: 18px;
+        }
+        #pdp-info-{{ section.id }} .pdp-info__content li{
+          margin: 0 0 10px;
+          line-height: 1.4;
+        }
+
+
+        /* Keep the item after each H3 visually attached */
+        #pdp-info-{{ section.id }} .pdp-info__content h3 + *{
+          margin-top: 0;
+        }
+  {% endstyle %}
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "PDP Info",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Accordion label",
+      "default": "Info"
+    },
+    {
+      "type": "paragraph",
+      "content": "Content comes from the product metafield custom.pdp_info (Rich text)."
+    }
+  ],
+  "presets": [{ "name": "PDP Info" }]
+}
+{% endschema %}

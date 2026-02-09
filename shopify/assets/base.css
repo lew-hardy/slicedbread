@@ -3781,3 +3781,8 @@ details-disclosure > details {
 .product__info-wrapper .pdp-olyab .pdp-rec-grid{
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
 }
+
+
+.shopify-section {
+  margin-bottom: 30px;
+}
